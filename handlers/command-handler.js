@@ -10,7 +10,7 @@ module.exports = client => {
     for (const file of commandFiles) {
         const filePath = path.join(commandsPath, file);
         const command = require(filePath);
-        client.commands.set(command.data.name, command);
+        client.commands.set(command.data.name, command); // set key to command name and value to command module data
     }
 
     // will be executed in command-interaction.js

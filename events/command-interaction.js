@@ -4,7 +4,7 @@ module.exports = {
 	async execute(interaction) { //use async because there are awaits
 		if (!interaction.isCommand()) return;
 
-        const command = interaction.client.commands.get(interaction.commandName);
+        const command = interaction.client.commands.get(interaction.commandName); //get the data from commands with the command name
 
         if (!command) return;
 

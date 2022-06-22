@@ -1,3 +1,4 @@
+// Starts a new game of art telephone
 // Require the slash command builder
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
@@ -22,7 +23,6 @@ module.exports = {
         }),
 	
     async execute(interaction) { // command functions
-		if(interaction.options.getSubcommand === 'new'){
-        } else if
-	},
+      return interaction.reply('yo');
+	  }
 };

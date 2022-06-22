@@ -13,5 +13,5 @@ module.exports = client => {
         client.commands.set(command.data.name, command); // set key to command name and value to command module data
     }
 
-    // will be executed in command-interaction.js
+    // will be executed in interactionCreate.js
 };

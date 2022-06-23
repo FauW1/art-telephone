@@ -9,8 +9,10 @@ module.exports = {
     
     if (interaction.commandName === 'start') {
       const focusedValue = interaction.options.getFocused();
-    
-      const choices = db.list(char).then(matches => { return matches.forEach(match => match.slice(1)) }); // make an array of possible names (without the special character)
+
+      const db = interaction.client.db;
+      const choices = await db.list(char); // make an array of possible names
+      choices.forEach(match => match.slice(1)); // without the special character
     
       console.log(choices); //TODO: testing
     

@@ -4,6 +4,10 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 char = process.env.EXIST_CHAR; //special character to add before responses
 NewChar = process.env.ACTIVE_CHAR; //special character to add before responses
 
+// open database
+const Database = require("@replit/database");
+const db = new Database();
+
 // Export as a module for other files to require()
 module.exports = {
   data: new SlashCommandBuilder() // command details
@@ -37,33 +41,44 @@ module.exports = {
 
   async execute(interaction) { // command functions
     // from https://discordjs.guide/interactions/slash-commands.html#parsing-options
-    const db = interaction.client.db; //client database instance
-
+    
     // NEW GAME
     if (interaction.options.getSubcommand() === 'new') {
+      let reply;
+      interaction.channel.send('React to this message if you would like to participate in a game!')
+        .then(message => {
+        console.log(`message sent ${message.content}`);
+        reply = message;
+      })
+        .catch(console.log);
+
+      console.log(reply);
+      
       await interaction.deferReply(); // open 15-min window
       
       const name = interaction.options.getString('name'); // game name created
       const time = new Date(); // get time now in milliseconds
       const key = char + name + time; // create a key for the message sent
 
-      const reply = await interaction.reply('react to this message if you would like to participate in a game!');
-      const messageId = reply.message.id; // gets the message of the reply
+      const messageId = reply.message.id; // gets the message id of the reply
+      db.set(key, messageId); //store into the database
 
-      return db.set(key, messageId); //store into the database
+      return await interaction.editReply(`New game (${key}) created.`);
     }
 
     // EXISTING GAME
     else if (interaction.options.getSubcommand() === 'existing') {
+      await interaction.deferReply(); // open 15-min window
+      
       const name = interaction.options.getString('name'); // game name created
-      const key = char + name; // create key in the format of SPEC_CHAR + name ('&name')
+      const key = char + name; // create key in the format of SPEC_CHAR + name ('&name'), without time stamp
       const gamesFound = await db.list(key);
       const numFound = gamesFound.length;
 
       console.log(gamesFound);
 
       if (numFound === 0) { // no games found 
-        return interaction.reply({ content: 'No games of that name found.', ephemeral: true });
+        return interaction.editReply({ content: 'No games of that name found.', ephemeral: true });
       } else if (numFound > 1) { // multiple games found
         await interaction.editReply('Which game would you like to start?' + '\n' + gamesFound + '\nPlease respond with the game name exactly as shown.');
 
@@ -100,12 +115,13 @@ module.exports = {
 
       db.delete(key); // remove from unused games
 
-      const newKey = newChar + name; // active game new key
+      const time = new Date(); // get time now in milliseconds
+      const newKey = newChar + name + time; // active game new key
       db.set(newKey, userArray); // store active game
 
       // DM FIRST USER! REMEMBER TO SET ROLE TO ACTIVE (TODO)
       const firstUser = await client.users.fetch(userArray[0][0]); // get first user with id
-      user.send('YOU ARE THE FIRST IN THE LIST, HERE IS YOUR PROMPT'); // TODO: CHANGE PROMPT DEPENDING ON SETTINGS STORED
+      firstUser.send('YOU ARE THE FIRST IN THE LIST, HERE IS YOUR PROMPT'); // TODO: CHANGE PROMPT DEPENDING ON SETTINGS STORED
       
       // all conditions cared for, now just one game
       return interaction.editReply(`The game ${gamesFound[0]} has begun! with users ${userArray}.`);  // TODO: MAKE A LIST OF PLAYERS FROM REACTIONS, PING THEM

@@ -1,6 +1,7 @@
 // Require necessary file
 const fs = require('node:fs');
 const path = require('node:path');
+const keepAlive = require('./bot-server.js');
 const { Client, Collection, Intents } = require('discord.js');
 
 // Use database
@@ -10,7 +11,10 @@ const Database = require('@replit/database'); // Import the database
 const token = process.env.TOKEN;
 
 // New client instance with specified intents
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [
+  Intents.FLAGS.GUILDS, // basic/necessary functions
+  Intents.FLAGS.GUILD_MESSAGES //send messages
+]});
 
 //patterns from https://www.youtube.com/watch?v=Sihf7B8D4Y8&ab_channel=CodeLyon and command/event handling documentation
 client.commands = new Collection(); //commands collection
@@ -25,6 +29,9 @@ for(handler of handlerFiles){
 	const handlerFilePath = path.join(handlerPath, handler); // join handler file name and the handler path
 	require(handlerFilePath)(client); // dependency interjection so that the module can access the client instance
 }
+
+// Keep bot online
+keepAlive();
 
 // Login to Discord
 client.login(token);

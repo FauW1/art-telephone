@@ -1,3 +1,5 @@
+// run with ./node_modules/node/bin/node deploy-commands.js
+// OR sh deploy.sh https://www.youtube.com/watch?time_continue=77&v=vDlCkQ9-ErU&feature=emb_title
 // Require necessary files
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');

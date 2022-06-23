@@ -44,20 +44,24 @@ module.exports = {
     if (interaction.options.getSubcommand() === 'new') {
       let messageId;
 
-      await interaction.deferReply(); // remember to write AWAIT before these
-      await interaction.editReply({ content: 'Pong!', fetchReply: true })
+      await interaction.deferReply({ fetchReply: true })
         .then((message) => {
           messageId = message.id;
           console.log(`Reply sent with id ${messageId}`);
         })
-        .catch(console.error);
+        .catch(console.error); // remember to write AWAIT before these
 
       // CREATE A KEY
       const name = interaction.options.getString('name');
       const time = new Date(); //current timestamp
 
       const key = char + name + time; // unique key
-      return db.set(key, messageId); // store message id to be retrieved later
+      db.set(key, messageId); // store message id to be retrieved later
+
+      return await interaction.editReply(
+        `*[${key}]* \n 
+        React to this message to participate!`
+      ); 
       /*
       Step 1: SEND A MESSAGE AND GET ITS MESSAGE ID
 STEP 2: COLLECT REACTIONS
@@ -66,6 +70,8 @@ STEP 3: STORE ID INFO (CHAR + NAME + TIMESTAMP)
 STEP 4: GET REACTIONS FROM MESSAGE SUCCESSFULLY
 STEP 5: GET USER INFO FROM REACTIONS AND STORE
       */
+    } else if (interaction.options.getSubcommand() === 'existing') {
+      return await interaction.reply('testing');
     }
   }
 };

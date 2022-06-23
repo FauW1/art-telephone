@@ -41,19 +41,22 @@ module.exports = {
 
   async execute(interaction) { // command functions
     // from https://discordjs.guide/interactions/slash-commands.html#parsing-options
+    interaction.deferReply();
     
     // NEW GAME
     if (interaction.options.getSubcommand() === 'new') {
-      let messageId;
-      interaction.deferReply()
-      interaction.channel.send('React to this message if you would like to participate in a game!')
+      interaction.editReply('React to this message if you would like to participate in a game!')
         .then(message => {
         console.log(`message sent ${message.id} ${message.content}`);
-        reply = message;
       })
         .catch(console.log('ERROR'));
 
       //await interaction.deferReply(); // open 15-min window
+      let messageId;
+      
+      interaction.fetchReply()
+          .then(reply => messageId = reply.id)
+          .catch(console.error);
       
       const name = interaction.options.getString('name'); // game name created
       const time = new Date(); // get time now in milliseconds
@@ -122,7 +125,8 @@ module.exports = {
       firstUser.send('YOU ARE THE FIRST IN THE LIST, HERE IS YOUR PROMPT'); // TODO: CHANGE PROMPT DEPENDING ON SETTINGS STORED
       
       // all conditions cared for, now just one game
-      return interaction.editReply(`The game ${gamesFound[0]} has begun! with users ${userArray}.`);  // TODO: MAKE A LIST OF PLAYERS FROM REACTIONS, PING THEM
+      interaction.editReply(`The game ${gamesFound[0]} has begun!`);  // TODO: MAKE A LIST OF PLAYERS FROM REACTIONS, PING THEM
+      return interaction.followUp(`${userArray}.`); // follow up message
     }
 
     //TODO: BREAK UP THE CODE

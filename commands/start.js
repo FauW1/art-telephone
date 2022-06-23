@@ -42,14 +42,26 @@ module.exports = {
   async execute(interaction) { // command functions  
     // NEW GAME
     if (interaction.options.getSubcommand() === 'new') {
-      const name = interaction.options.getString('name');
-      
-      interaction.reply({ content: 'Pong!', fetchReply: true })
-        .then((message) => console.log(`Reply sent with content ${message.content}`))
+      let messageId;
+
+      await interaction.deferReply(); // remember to write AWAIT before these
+      await interaction.editReply({ content: 'Pong!', fetchReply: true })
+        .then((message) => {
+          messageId = message.id;
+          console.log(`Reply sent with id ${messageId}`);
+        })
         .catch(console.error);
+
+      // CREATE A KEY
+      const name = interaction.options.getString('name');
+      const time = new Date(); //current timestamp
+
+      const key = char + name + time; // unique key
+      return db.set(key, messageId); // store message id to be retrieved later
       /*
       Step 1: SEND A MESSAGE AND GET ITS MESSAGE ID
-STEP 2: LEARN HOW TO FETCH MESSAGE
+STEP 2: COLLECT REACTIONS
+LEARN HOW TO FETCH MESSAGE
 STEP 3: STORE ID INFO (CHAR + NAME + TIMESTAMP)
 STEP 4: GET REACTIONS FROM MESSAGE SUCCESSFULLY
 STEP 5: GET USER INFO FROM REACTIONS AND STORE

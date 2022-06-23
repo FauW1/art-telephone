@@ -8,7 +8,15 @@ module.exports = {
 		.setName('set')
 		.setDescription('Setup with default settings.'),
 	async execute(interaction) { // command functions
-    console.log('begin execution');
+    return interaction.reply('lol');
+	},
+};
+
+/*
+
+[BROKEN CODE, COME BACK TO IT LATER]
+
+console.log('begin execution');
     const guild = interaction.guild; // current guild the interaction is in
     const defaultChannel = guild.systemChannelId; // get the system channel of the guild
     const perms = interaction.client.perms; // get the necessary permission flags
@@ -16,7 +24,7 @@ module.exports = {
     console.log(defaultChannel);
     // if the default channel is a text channel and i have the relevant permissions
     if(defaultChannel && defaultChannel.isText() && guild.me.permissionsIn(defaultChannel).has(perms)){
-      /* empty statement */
+      //empty statement
     } else {
       // adapted from: https://stackoverflow.com/questions/51447954/sending-a-message-the-first-channel-with-discord-js
       let channels = guild.channels.cache; //channels
@@ -44,5 +52,5 @@ module.exports = {
     // If found admin, add that admin to the telephone "call center" role, and have commands to add more call center mods?
     // participant role is simply created (remember to check to see if role members match list or sth, maybe before every round)
     // TODO: DEFAULT GAME SETTINGS
-	},
-};
+
+*/

@@ -2,7 +2,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const keepAlive = require('./bot-server.js');
-const { Client, Collection, Intents } = require('discord.js');
+const { Client, Collection, Intents, Permissions } = require('discord.js');
 
 // Use database
 const Database = require('@replit/database'); // Import the database

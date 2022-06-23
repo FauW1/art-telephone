@@ -1,4 +1,4 @@
-// Require necessary files
+// Require necessary file
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, Intents } = require('discord.js');

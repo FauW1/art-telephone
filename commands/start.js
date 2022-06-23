@@ -44,26 +44,24 @@ module.exports = {
     
     // NEW GAME
     if (interaction.options.getSubcommand() === 'new') {
-      let reply;
+      let messageId;
+      interaction.deferReply()
       interaction.channel.send('React to this message if you would like to participate in a game!')
         .then(message => {
-        console.log(`message sent ${message.content}`);
+        console.log(`message sent ${message.id} ${message.content}`);
         reply = message;
       })
-        .catch(console.log);
+        .catch(console.log('ERROR'));
 
-      console.log(reply);
-      
-      await interaction.deferReply(); // open 15-min window
+      //await interaction.deferReply(); // open 15-min window
       
       const name = interaction.options.getString('name'); // game name created
       const time = new Date(); // get time now in milliseconds
       const key = char + name + time; // create a key for the message sent
 
-      const messageId = reply.message.id; // gets the message id of the reply
-      db.set(key, messageId); //store into the database
-
-      return await interaction.editReply(`New game (${key}) created.`);
+      // const messageId = reply.message.id; // gets the message id of the reply
+      return db.set(key, messageId); //store into the database
+      //return await interaction.editReply(`New game (${key}) created.`);
     }
 
     // EXISTING GAME

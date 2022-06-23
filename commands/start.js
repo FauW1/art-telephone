@@ -27,6 +27,11 @@ module.exports = {
     ),
 	
     async execute(interaction) { // command functions
-      return interaction.reply('yo');
+      // from, https://discordjs.guide/interactions/slash-commands.html#parsing-options
+      if(interaction.options.getSubcommand() === 'new'){
+        return interaction.reply('start game!');
+      } else {
+        return interaction.reply('yo'); 
+      }
 	  }
 };

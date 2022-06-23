@@ -16,9 +16,22 @@ const client = new Client({ intents: [
   Intents.FLAGS.GUILD_MESSAGES //send messages
 ]});
 
+// Necessary Permissions for bot to work (bot may need admin perms anyways ;-; it wants to give roles to everybody)
+const botPerms = new Permissions([
+  Permissions.FLAGS.ADD_REACTIONS,
+  Permissions.FLAGS.VIEW_CHANNEL,
+  Permissions.FLAGS.SEND_MESSAGES,
+  Permissions.FLAGS.MANAGE_MESSAGES, // elevated permission, needs 2FA
+  Permissions.FLAGS.EMBED_LINKS,
+  Permissions.FLAGS.ATTACH_FILES,
+  Permissions.FLAGS.MANAGE_ROLES,
+  Permissions.FLAGS.MANAGE_EMOJIS_AND_STICKERS // elevated permission, needs 2FA
+]);
+
 //patterns from https://www.youtube.com/watch?v=Sihf7B8D4Y8&ab_channel=CodeLyon and command/event handling documentation
 client.commands = new Collection(); //commands collection
 client.db = new Database(); // make a new database (TODO: idk if this works)
+client.perms = botPerms; // new property referencing bot perms
 
 // get handler files and run their functions
 const handlerPath = path.join(__dirname, 'handlers'); // handler folder

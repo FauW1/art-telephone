@@ -4,9 +4,6 @@ const path = require('node:path');
 const keepAlive = require('./bot-server.js');
 const { Client, Collection, Intents, Permissions } = require('discord.js');
 
-// Use database
-const Database = require('@replit/database'); // Import the database
-
 // Use environment variables
 const token = process.env.TOKEN;
 
@@ -30,7 +27,6 @@ const botPerms = new Permissions([
 
 //patterns from https://www.youtube.com/watch?v=Sihf7B8D4Y8&ab_channel=CodeLyon and command/event handling documentation
 client.commands = new Collection(); //commands collection
-client.db = new Database(); // make a new database (TODO: idk if this works)
 client.perms = botPerms; // new property referencing bot perms
 
 // get handler files and run their functions

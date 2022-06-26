@@ -1,8 +1,6 @@
 // Starts a new game of art telephone
 // Require the slash command builder
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const char = '&'; //special character to add before responses
-const NewChar = '%'; //special character to add before responses
 
 // open database
 const Database = require("@replit/database");

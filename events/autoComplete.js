@@ -9,8 +9,7 @@ module.exports = {
     if (interaction.commandName === 'start') {
       const focusedValue = interaction.options.getFocused();
       
-      //console.log(choices); //TODO: testing
-      const choices = ['test', 'hello', 'lol'];
+      const choices = ['test', 'hello', 'lol']; // this works
       
       const filtered = choices.filter(choice => choice.startsWith(focusedValue));
       await interaction.respond(

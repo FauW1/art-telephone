@@ -3,11 +3,10 @@ const path = require('node:path');
 
 const gameDefault = path.join(__dirname, 'gameDefault.js');
 
-const settingsData = (channelId, modRoleId, playerRoleName, activeRoleName) => {
+const settingsData = (channelId, modRoleId, activeRoleName) => {
   return { //return settings data object
     channel: channelId, // logs channel
     mods: modRoleId,
-    player: playerRoleName,
     activePlayer: activeRoleName,
     default: gameDefault, // server default, created upon instantiation: can be edited, and can also be reverted to default
   };

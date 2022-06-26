@@ -10,10 +10,8 @@ module.exports = {
     const guildId = guild.id; // get the guild id
 
     if (!db.get(guildId)) { // if no guild id key found
-      const guildObj = guildData(); // new guild object created
-      
-      db.set(guildId, guildObj)
-        .then(() => { console.log(`${guildId} object added.`) }); // use guild id as key, put in a guild object 
+      db.set(guildId, {})
+        .then(() => { console.log(`${guildId} object added.`) }); // use guild id as key, put in an empty object 
     }
   }
 };

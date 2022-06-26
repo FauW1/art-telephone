@@ -12,6 +12,7 @@ const gameData = (name, settings) => {
     images: [], // empty array for adding images to
     stateNum: 0, // DOES THIS WORK LIKE THAT? TEST
     _state: gameState(stateNum), // 0: queued
+    _timeStamp: new Date(), // would this work?
   };
 };
 

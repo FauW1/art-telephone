@@ -1,5 +1,3 @@
-const char = process.env.EXIST_CHAR;
-
 // Dynamically execute commands
 module.exports = {
   name: 'interactionCreate',

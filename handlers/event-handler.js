@@ -12,7 +12,7 @@ module.exports = client => {
         const filePath = path.join(eventsPath, file);
         const event = require(filePath);
         if (event.once) {
-            client.once(event.name, (...args) => event.execute(...args)); // event listener created, if the event should only happen once
+            client.once(event.name, (...args) => event.execute(...args)); // event listener created, if the event should only happen once (takes in event args with rest parameter syntax and passes it in with the spread syntax; The rest parameter collects these variable number of arguments into a single array, and the spread syntax then takes these elements and passes them to the execute function.)
         } else {
             client.on(event.name, (...args) => event.execute(...args)); // event listener created, if the event should happen every time
         }

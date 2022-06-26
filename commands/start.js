@@ -49,7 +49,7 @@ module.exports = {
           messageId = message.id;
           console.log(`Reply sent with id ${messageId}`);
         })
-        .catch(console.error); // remember to write AWAIT before these
+        .catch(console.error); // remember to write AWAIT before these (this is valid in an async function)
 
       // CREATE A KEY
       const name = interaction.options.getString('name');

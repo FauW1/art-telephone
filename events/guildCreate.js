@@ -1,7 +1,7 @@
 const Database = require("@replit/database");
 const db = new Database();
 
-modules.exports = {
+module.exports = {
   name: 'guildCreate',
   async execute(guild){
     guildId = guild.id; // get the guild id

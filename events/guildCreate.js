@@ -1,8 +1,5 @@
 const Database = require('@replit/database');
-const path = require('node:path');
-
 const db = new Database();
-const guildData = path.join(__dirname, '..', 'schemas', 'guildData.js'); // access guild data factory function
 
 module.exports = {
   name: 'guildCreate',

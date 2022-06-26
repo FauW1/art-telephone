@@ -1,12 +1,8 @@
 // guild data factory function: https://www.codecademy.com/courses/introduction-to-javascript/lessons/advanced-objects/exercises/factory-functions
-const path = require('node:path');
 
-const settingsData = require(path.join(__dirname, 'settingsData.js')); // settings data path
-
-const guildData = () => {
+const guildData = (settings) => {
   return { //return guild data object
-    // add settings property upon setup
-    settings: settingsData(null, null, null, null), // null values for settings
+    settings: settings, // settings object for the guild
     active: null,
     queued: null,
     completed: null,

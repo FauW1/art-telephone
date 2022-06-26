@@ -8,7 +8,7 @@ module.exports = {
 		.setName('set')
 		.setDescription('Setup with default settings.'),
 	async execute(interaction) { // command functions
-    return interaction.reply('lol');
+    
 	},
 };
 

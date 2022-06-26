@@ -1,11 +1,15 @@
 // guild data factory function: https://www.codecademy.com/courses/introduction-to-javascript/lessons/advanced-objects/exercises/factory-functions
+const path = require('node:path');
 
-const settingsData = (channelId, modRoleId, playerRoleId, activeId) => {
+const gameDefault = path.join(__dirname, 'gameDefault.js');
+
+const settingsData = (channelId, modRoleId, playerRoleName, activeRoleName) => {
   return { //return settings data object
-    channel: channelId,
+    channel: channelId, // logs channel
     mods: modRoleId,
-    player: playerRoleId,
-    activePlayer: activeId
+    player: playerRoleName,
+    activePlayer: activeRoleName,
+    default: gameDefault, // server default, created upon instantiation: can be edited, and can also be reverted to default
   };
 };
 

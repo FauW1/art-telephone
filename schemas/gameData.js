@@ -1,5 +1,8 @@
-const settingsData = require('./settingsData.js');
-const gameState = require('./gameState.js');
+const path = require('node:path');
+
+// needed files (using path to ensure it runs on all operating systems)
+const settingsData = require(path.join(__dirname, 'settingsData.js'));
+const gameState = require(path.join(__dirname, 'gameState.js'));
 
 const gameData = (name) => {
   return { //return game data object

@@ -1,7 +1,7 @@
 // Require necessary file
 const fs = require('node:fs');
 const path = require('node:path');
-const keepAlive = require('./bot-server.js');
+const keepAlive = require(path.join(__dirname, 'bot-server.js'));
 const { Client, Collection, Intents, Permissions } = require('discord.js');
 
 // Use environment variables

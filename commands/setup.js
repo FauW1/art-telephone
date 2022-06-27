@@ -62,13 +62,15 @@ module.exports = {
 
       if (!activePlayer || !mods) return await interaction.editReply('Error creating roles.');
 
+      // THIS CODE IS JUST GOOD-TO-HAVE, DEPENDENT ON PRIVILEGED INTENT: GUILDS_MEMBERS -- REMOVE IF CAUSING PROBLEMS!!!
       // Assign mod role to admins (https://www.codegrepper.com/code-examples/javascript/get+every+member+of+a+server+discord+js)
       // Fetch and get the list named 'members'
       guild.members.fetch().then(members => {
         // Loop through every member
-        members.filter(member => !member.user.bot).forEach(member => {
+        members.forEach(member => {
           if(member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)){
             member.roles.add(mods);
+            console.log(`${mods} added to ${member}`);
           }
         });
       });

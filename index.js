@@ -10,7 +10,8 @@ const token = process.env.TOKEN;
 // New client instance with specified intents
 const client = new Client({ intents: [
   Intents.FLAGS.GUILDS, // basic/necessary functions
-  Intents.FLAGS.GUILD_MESSAGES //send messages
+  Intents.FLAGS.GUILD_MESSAGES, //send messages
+  Intents.FLAGS.GUILD_MEMBERS,
 ]});
 
 // Necessary Permissions for bot to work (bot may need admin perms anyways ;-; it wants to give roles to everybody)

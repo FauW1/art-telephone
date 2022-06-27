@@ -17,11 +17,16 @@ const settingsData = require(path.join(schemaPath, 'settingsData.js')); // for s
 const embedsPath = path.join(__dirname, '..', 'embeds');
 const serverSettings = require(path.join(embedsPath, 'server-settings.js')); // for server settings constructor
 
+// call center permissions
+const modPerms = Permissions.FLAGS.MODERATE_MEMBERS;
+
 // Export as a module for other files to require()
 module.exports = {
   data: new SlashCommandBuilder() // command details
     .setName('setup')
-    .setDescription('Setup with default settings.'),
+    .setDescription('Setup with default settings.')
+    .setDMPermission(false)
+    .setDefaultMemberPermissions(modPerms),
   async execute(interaction) { // command functions
     await interaction.deferReply({ ephemeral: true }); // open 15-minute response window, ephemeral
     const guild = interaction.guild;
@@ -69,7 +74,7 @@ module.exports = {
       guild.members.fetch().then(members => {
         // Loop through every member
         members.forEach(member => {
-          if(member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS)) {
+          if(member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || member.permissions.has(modPerms)) {
             member.roles.add(mods);
           }
         });

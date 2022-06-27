@@ -1,3 +1,13 @@
+/*
+// for testing truthy and falsyness of values
+const testObj = {};
+if(testObj){
+  console.log(true); 
+} else{
+  console.log(false);
+} // an empty object returns true ;-;
+*/
+
 // for seeing values in the database
 const Database = require("@replit/database");
 const db = new Database();

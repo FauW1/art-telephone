@@ -6,9 +6,14 @@ module.exports = {
   async execute(guild) {
     const guildId = guild.id; // get the guild id
 
-    if (!db.get(guildId)) { // if no guild id key found
-      db.set(guildId, {})
-        .then(() => { console.log(`${guildId} object added.`) }); // use guild id as key, put in an empty object 
+    console.log(`Joined guild ${guildId}`);
+    
+    const guildIdFound = await db.get(guildId);
+    console.log(`Guild data ${guildIdFound}`);
+    
+    if (!guildIdFound) { // if no guild id key found
+      db.set(guildId, null)
+        .then(() => { console.log(`${guildId} object added.`)}); // use guild id as key, put in null
     }
   }
 };

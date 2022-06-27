@@ -10,7 +10,7 @@ const { MessageEmbed } = require('discord.js'); // to use embeds
 * @return returns the embed object
 */
 
-const serverSettings = (guild, callCenter, mod, activePlayer) => {
+const serverSettings = (guild, callCenter, mods, activePlayer) => {
   return new MessageEmbed() // this can be refactored -> put into embeds folder 
   .setColor('#8f3985')
   .setTitle('Server Set Up Successfully.')
@@ -18,7 +18,7 @@ const serverSettings = (guild, callCenter, mod, activePlayer) => {
   .addFields(
     { name: 'Log Channel⚠️', value: `<#${callCenter.id}> \n(Do NOT delete this channel or the bot messages here)` },
     // { name: '\u200B', value: '\u200B' }, // '\u200B' is a unicode character zero-width space
-    { name: 'Mod Role', value: `<@&${mod.id}>` },
+    { name: 'Mod Role', value: `<@&${mods.id}>` },
     { name: 'Active Player Role', value: `<@&${activePlayer.id}>` },
   )
   .setTimestamp();

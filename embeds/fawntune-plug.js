@@ -5,6 +5,9 @@ const fawntuneEmbed = {
 	color: 0x0824deb,
 	title: 'Hope you enjoy my bot!',
 	description: 'Check out more of my work and consider supporting me! :)',
+  thumbnail: {
+    url: "https://i.imgur.com/J0w3MWF.png",
+  },
 	fields: [
 		{ name: 'Support me on Ko-Fi', value: 'https://ko-fi.com/fawntune' },
 		{ name: 'Instagram', value: 'https://www.instagram.com/faustine.art/', inline: true },

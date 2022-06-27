@@ -16,7 +16,6 @@ const settingsData = require(path.join(schemaPath, 'settingsData.js')); // for s
 // embed modules
 const embedsPath = path.join(__dirname, '..', 'embeds');
 const serverSettings = require(path.join(embedsPath, 'server-settings.js')); // for server settings constructor
-const fawntuneEmbed = require(path.join(embedsPath, 'fawntune-plug.js')); // for plugging fawntune >:)
 
 // Export as a module for other files to require()
 module.exports = {
@@ -30,33 +29,38 @@ module.exports = {
 
     if (!guild || !guild.available) return await interaction.editReply('Error accessing guild.');
 
-    const guildCurrVal = await db.get(guildId).then(value => { return value.settings }); // do settings exist?
+    const guildCurrVal = await db.get(guildId).then(value => {
+      if(!value) { // if value is falsy
+        db.set(guildId, null)
+        .then(() => { console.log(`${guildId} object added.`)});
+        return null;
+      } else {
+        return value.settings;
+      }
+    }); // do settings exist?
 
     if (guildCurrVal) { // if there are already settings
-      /*const callCenter = guildCurrVal.channel;
-      const mod = guildCurrVal.mod;
-      const activePlayer = guildCurrVal.activePlayer;
+      const { channel, mods, activePlayer } = guildCurrVal; // destructuring assignment, take these values from settings
       
-      const responseEmbed = serverSettings(guild, callCenter, mod, activePlayer);*/
-      return interaction.editReply('Already Setup.');
-      // return interaction.editReply({ content: 'Already setup.', embeds: [responseEmbed, fawntuneEmbed] }); // later check to see if someone has already pledged and remove my plug ;-;
+      const responseEmbed = serverSettings(guild, channel, mods, activePlayer);
+      return interaction.editReply({ content: 'Already set up.', embeds: [responseEmbed] });
     } else {
       // Create a new role with data and a reason https://discord.js.org/#/docs/main/stable/class/RoleManager?scrollTo=create
       let activePlayer =
         await guild.roles.create({
-          name: 'Calling in...',
+          name: '📞Calling in...',
           color: 'YELLOW',
           reason: 'A role for the player who is making the next art piece.',
         }); // role for active player
 
-      let mod =
+      let mods =
         await guild.roles.create({
-          name: 'Operator',
+          name: '📞Operator',
           color: 'ed6a5a', // a red color
           reason: 'A role for the mods who manage the game.',
         }); // create role for mods
 
-      if (!activePlayer || !mod) return await interaction.editReply('Error creating roles.');
+      if (!activePlayer || !mods) return await interaction.editReply('Error creating roles.');
 
       // Create new call center channel (for logs) from https://discord.js.org/#/docs/main/stable/class/GuildChannelManager?scrollTo=create
       // Create private channel based on https://stackoverflow.com/questions/57339085/discord-bot-how-to-create-a-private-text-channel
@@ -69,7 +73,7 @@ module.exports = {
               deny: [Permissions.FLAGS.VIEW_CHANNEL],
             },
             {
-              id: mod.id,
+              id: mods.id,
               allow: [Permissions.FLAGS.VIEW_CHANNEL, Permissions.FLAGS.SEND_MESSAGES], //override so that only the mods can see it
             }
           ],
@@ -78,18 +82,18 @@ module.exports = {
       if (!callCenter) return await interaction.editReply('Error creating logs channel.');
 
       // create guild settings
-      const settings = settingsData(callCenter, mod, activePlayer);
+      const settings = settingsData(callCenter, mods, activePlayer);
       // create guild object
       const guildObj = guildData(settings);
 
       db.set(guildId, guildObj); //.then(console.log(guildObj)); // create guild object in the database
 
       // response embed (contains all the info to send to users)
-      const responseEmbed = serverSettings(guild, callCenter, mod, activePlayer);
+      const responseEmbed = serverSettings(guild, callCenter, mods, activePlayer);
       // fawntune embed
 
       // TODO: if statement to see whether they have already pledged, remove the plug
-      return await interaction.editReply({ embeds: [responseEmbed, fawntuneEmbed] }); // respond with the embeds 
+      return await interaction.editReply({ embeds: [responseEmbed] }); // respond with the embeds 
     }
   },
 };

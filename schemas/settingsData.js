@@ -1,7 +1,7 @@
 // guild data factory function: https://www.codecademy.com/courses/introduction-to-javascript/lessons/advanced-objects/exercises/factory-functions
 const path = require('node:path');
 
-const gameDefault = path.join(__dirname, 'gameDefault.js');
+const gameDefault = require(path.join(__dirname, 'gameDefault.js'));
 
 const settingsData = (channelId, modRoleId, activeRoleName) => {
   return { //return settings data object

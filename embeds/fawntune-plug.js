@@ -1,22 +1,16 @@
-// complete this later
-const { MessageEmbed } = require('discord.js'); // to use embeds
+// NOTE: AN EMBED OBJECT!! EDITED DIFFERENTLY
+// https://discordjs.guide/popular-topics/embeds.html#using-an-embed-object
 
-const fawntuneEmbed = new MessageEmbed()
-	.setColor('#0099ff')
-	.setTitle('Some title')
-	.setURL('https://discord.js.org/')
-	.setAuthor({ name: 'Some name', iconURL: 'https://i.imgur.com/AfFp7pu.png', url: 'https://discord.js.org' })
-	.setDescription('Some description here')
-	.setThumbnail('https://i.imgur.com/AfFp7pu.png')
-	.addFields(
-		{ name: 'Regular field title', value: 'Some value here' },
-		{ name: '\u200B', value: '\u200B' },
-		{ name: 'Inline field title', value: 'Some value here', inline: true },
-		{ name: 'Inline field title', value: 'Some value here', inline: true },
-	)
-	.addField('Inline field title', 'Some value here', true)
-	.setImage('https://i.imgur.com/AfFp7pu.png')
-	.setTimestamp()
-	.setFooter({ text: 'Some footer text here', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
+const fawntuneEmbed = {
+	color: 0x0824deb,
+	title: 'Hope you enjoy my bot!',
+	description: 'Check out more of my work and consider supporting me! :)',
+	fields: [
+		{ name: 'Support me on Ko-Fi', value: 'https://ko-fi.com/fawntune' },
+		{ name: 'Instagram', value: 'https://www.instagram.com/faustine.art/', inline: true },
+		{ name: 'Itch.io', value: 'https://fawntune.itch.io/', inline: true },
+    { name: 'Linktree', value: 'https://linktr.ee/faustinew'},
+	],
+};
 
-module.
+module.exports = fawntuneEmbed;

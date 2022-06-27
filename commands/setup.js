@@ -46,12 +46,6 @@ module.exports = {
       return interaction.editReply({ content: 'Already set up.', embeds: [responseEmbed] });
     } else {
       // Create a new role with data and a reason https://discord.js.org/#/docs/main/stable/class/RoleManager?scrollTo=create
-      let activePlayer =
-        await guild.roles.create({
-          name: '📞Calling in...',
-          color: 'YELLOW',
-          reason: 'A role for the player who is making the next art piece.',
-        }); // role for active player
 
       let mods =
         await guild.roles.create({
@@ -60,6 +54,13 @@ module.exports = {
           reason: 'A role for the mods who manage the game.',
         }); // create role for mods
 
+      let activePlayer =
+        await guild.roles.create({
+          name: '📞Calling in...',
+          color: 'YELLOW',
+          reason: 'A role for the player who is making the next art piece.',
+        }); // role for active player
+      
       if (!activePlayer || !mods) return await interaction.editReply('Error creating roles.');
 
       // THIS CODE IS JUST GOOD-TO-HAVE, DEPENDENT ON PRIVILEGED INTENT: GUILDS_MEMBERS -- REMOVE IF CAUSING PROBLEMS!!!
@@ -68,9 +69,8 @@ module.exports = {
       guild.members.fetch().then(members => {
         // Loop through every member
         members.forEach(member => {
-          if(member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)){
+          if(member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || member.permissions.has(Permissions.FLAGS.MODERATE_MEMBERS)) {
             member.roles.add(mods);
-            console.log(`${mods} added to ${member}`);
           }
         });
       });

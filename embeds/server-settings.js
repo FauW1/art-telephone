@@ -18,8 +18,8 @@ const serverSettings = (guild, callCenter, mods, activePlayer) => {
   .addFields(
     { name: 'Log Channel⚠️', value: `<#${callCenter.id}> \n(Do NOT delete this channel or the bot messages here)` },
     // { name: '\u200B', value: '\u200B' }, // '\u200B' is a unicode character zero-width space
-    { name: 'Mod Role', value: `<@&${mods.id}>` },
-    { name: 'Active Player Role', value: `<@&${activePlayer.id}>` },
+    { name: 'Mod Role', value: `<@&${mods.id}> \n(Feel free to add or remove users from this role)` },
+    { name: 'Active Player Role', value: `<@&${activePlayer.id}> \n(For cosmetic purposes, will be recreated during games)` },
   )
   .setTimestamp();
 };

@@ -30,9 +30,9 @@ module.exports = {
     if (!guild || !guild.available) return await interaction.editReply('Error accessing guild.');
 
     const guildCurrVal = await db.get(guildId).then(value => {
-      if(!value) { // if value is falsy
+      if (!value) { // if value is falsy
         db.set(guildId, null)
-        .then(() => { console.log(`${guildId} object added.`)});
+          .then(() => { console.log(`${guildId} object added.`) });
         return null;
       } else {
         return value.settings;
@@ -41,7 +41,7 @@ module.exports = {
 
     if (guildCurrVal) { // if there are already settings
       const { channel, mods, activePlayer } = guildCurrVal; // destructuring assignment, take these values from settings
-      
+
       const responseEmbed = serverSettings(guild, channel, mods, activePlayer);
       return interaction.editReply({ content: 'Already set up.', embeds: [responseEmbed] });
     } else {
@@ -62,6 +62,17 @@ module.exports = {
 
       if (!activePlayer || !mods) return await interaction.editReply('Error creating roles.');
 
+      // Assign mod role to admins (https://www.codegrepper.com/code-examples/javascript/get+every+member+of+a+server+discord+js)
+      // Fetch and get the list named 'members'
+      guild.members.fetch().then(members => {
+        // Loop through every member
+        members.filter(member => !member.user.bot).forEach(member => {
+          if(member.permissions.has(Permissions.FLAGS.ADMINISTRATOR)){
+            member.roles.add(mods);
+          }
+        });
+      });
+
       // Create new call center channel (for logs) from https://discord.js.org/#/docs/main/stable/class/GuildChannelManager?scrollTo=create
       // Create private channel based on https://stackoverflow.com/questions/57339085/discord-bot-how-to-create-a-private-text-channel
       let callCenter =
@@ -69,7 +80,7 @@ module.exports = {
           type: 'GUILD_TEXT', // https://discord.js.org/#/docs/main/stable/typedef/ChannelType
           permissionOverwrites: [
             {
-              id: interaction.guild.id, // THIS WORKS! sets it to a private channel that everyone cannot see
+              id: interaction.guild.id, // THIS WORKS! sets it to a private channel that everyone cannot see ( The guild ID doubles as the role id for the default role @everyone, https://discordjs.guide/popular-topics/permissions.html#channel-overwrites)
               deny: [Permissions.FLAGS.VIEW_CHANNEL],
             },
             {
@@ -90,9 +101,7 @@ module.exports = {
 
       // response embed (contains all the info to send to users)
       const responseEmbed = serverSettings(guild, callCenter, mods, activePlayer);
-      // fawntune embed
 
-      // TODO: if statement to see whether they have already pledged, remove the plug
       return await interaction.editReply({ embeds: [responseEmbed] }); // respond with the embeds 
     }
   },

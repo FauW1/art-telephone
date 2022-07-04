@@ -35,16 +35,13 @@ module.exports = {
     if (!guild || !guild.available) return await interaction.editReply('Error accessing guild.');
 
     const guildCurrVal = await db.get(guildId).then(value => {
+      console.log(value);
       if (!value) { // if value is falsy
         return null;
       } else {
         return value.settings;
       }
-    })
-      .catch( // if the guild id object doesn't even exist
-        db.set(guildId, null)
-          .then(() => { console.log(`${guildId} object added.`) })
-      ); // do settings exist?
+    }); // do settings exist?
 
     if (guildCurrVal) { // if there are already settings
       const { channel, mods, activePlayer } = guildCurrVal; // destructuring assignment, take these values from settings
@@ -107,7 +104,7 @@ module.exports = {
       const guildObj = guildData(settings);
 
       db.set(guildId, guildObj).then(console.log(guildObj));
-        //.catch(console.error('Unable to add guild to database.')); // create guild object in the database
+      //.catch(console.error('Unable to add guild to database.')); // create guild object in the database
 
       // response embed (contains all the info to send to users)
       const responseEmbed = serverSettings(guild, callCenter, mods, activePlayer);

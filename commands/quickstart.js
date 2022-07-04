@@ -29,12 +29,7 @@ module.exports = {
           { name: 'Hour(s)', value: '2' },
           { name: 'Day(s)', value: '3' },
           { name: 'Week(s)', value: '4' },
-  			))
-    
-    .addIntegerOption(option =>
-      option.setName('max players')
-            .setDescription('The maximum number of players allowed.')
-            .setRequired(true)),
+  			)),
   
 	async execute(interaction) { // command functions
     // TODO: reaction collector, create a new game based on this, send reminder messages (regularly scheduled, check every second)

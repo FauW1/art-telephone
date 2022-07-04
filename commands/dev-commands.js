@@ -18,7 +18,7 @@ module.exports = {
 		const guildId = interaction.guild.id;
     if(interaction.options.getSubcommand() === 'data'){
       const guildData = await db.get(guildId);
-      return interaction.reply(`Server ID: ${guildId}\nguildData:\n ${JSON.stringify(guildData)}`);
+      return interaction.reply(`Server ID: ${guildId}\nguildData:\n ${JSON.stringify(guildData)}`); // if not stringified, will just print [object Object]
     }
 	},
 };

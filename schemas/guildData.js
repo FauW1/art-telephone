@@ -7,7 +7,6 @@ const guildData = (settings) => {
     _queued: [],
     _completed: [],
 
-    /*
     // GETTERS AND SETTERS
     get active() {
       return this._active;
@@ -22,11 +21,11 @@ const guildData = (settings) => {
       this._queued.push(gameData);
     },
     get completed() {
-      return this.completed;
+      return this._completed; // I missed an underscore and caused an infinite loop here: note how getters and setters can cause that
     },
     set completed(gameData) {
       this._completed.push(gameData);
-    },*/
+    },
   };
 };
 

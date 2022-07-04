@@ -65,7 +65,7 @@ module.exports = {
           color: 'YELLOW',
           reason: 'A role for the player who is making the next art piece.',
         }); // role for active player
-      
+
       if (!activePlayer || !mods) return await interaction.editReply('Error creating roles.');
 
       // THIS CODE IS JUST GOOD-TO-HAVE, DEPENDENT ON PRIVILEGED INTENT: GUILDS_MEMBERS -- REMOVE IF CAUSING PROBLEMS!!!
@@ -74,7 +74,7 @@ module.exports = {
       guild.members.fetch().then(members => {
         // Loop through every member
         members.forEach(member => {
-          if(member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || member.permissions.has(modPerms)) {
+          if (member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || member.permissions.has(modPerms)) {
             member.roles.add(mods);
           }
         });
@@ -104,7 +104,7 @@ module.exports = {
       // create guild object
       const guildObj = guildData(settings);
 
-      db.set(guildId, guildObj); //.then(console.log(guildObj)); // create guild object in the database
+      db.set(guildId, guildObj).then(console.log(guildObj)).catch(console.error('Unable to add guild to database.')); // create guild object in the database
 
       // response embed (contains all the info to send to users)
       const responseEmbed = serverSettings(guild, callCenter, mods, activePlayer);

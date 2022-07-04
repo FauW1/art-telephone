@@ -3,14 +3,15 @@ const path = require('node:path');
 // needed files (using path to ensure it runs on all operating systems)
 const gameState = require(path.join(__dirname, 'gameState.js'));
 
-const gameData = (name, settings) => {
+const gameData = (name, settings, messageId) => {
   return { //return game data object
     name: name,
-    settings: settings, // either pass in default guild settings object or a new settings object created by mod
-
+    settings: settings, // either pass in default guild game settings object or a new settings object created by mod
+    messageId: messageId,
     _users: [], // empty array until sign ups (stores art telephone players who have not played yet); will store array of user data objects
     _done: [], // users done
 
+    // GETTERS AND SETTERS
     userDone(userId) { // move user from available users to finished
       // find https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
       const foundUser = this._users.find(user => user.userId === userId); // find the user

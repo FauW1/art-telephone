@@ -8,7 +8,7 @@ const settingsData = (channelId, modRoleId, activeRoleName) => {
     channel: channelId, // logs channel
     mods: modRoleId,
     activePlayer: activeRoleName,
-    default: gameDefault(channelId), // server default, created upon instantiation: can be edited, and can also be reverted to default
+    gameDefault: gameDefault(channelId), // server default, created upon instantiation: can be edited, and can also be reverted to default
   };
 };
 

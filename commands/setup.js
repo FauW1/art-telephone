@@ -36,13 +36,15 @@ module.exports = {
 
     const guildCurrVal = await db.get(guildId).then(value => {
       if (!value) { // if value is falsy
-        db.set(guildId, null)
-          .then(() => { console.log(`${guildId} object added.`) });
         return null;
       } else {
         return value.settings;
       }
-    }); // do settings exist?
+    })
+      .catch( // if the guild id object doesn't even exist
+        db.set(guildId, null)
+          .then(() => { console.log(`${guildId} object added.`) })
+      ); // do settings exist?
 
     if (guildCurrVal) { // if there are already settings
       const { channel, mods, activePlayer } = guildCurrVal; // destructuring assignment, take these values from settings
@@ -74,7 +76,7 @@ module.exports = {
       guild.members.fetch().then(members => {
         // Loop through every member
         members.forEach(member => {
-          if (member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || member.permissions.has(modPerms)) {
+          if (member.permissions.has(Permissions.FLAGS.ADMINISTRATOR) || member.permissions.has(modPerms)) { // TODO: doesn't work super well i think
             member.roles.add(mods);
           }
         });
@@ -87,7 +89,7 @@ module.exports = {
           type: 'GUILD_TEXT', // https://discord.js.org/#/docs/main/stable/typedef/ChannelType
           permissionOverwrites: [
             {
-              id: interaction.guild.id, // THIS WORKS! sets it to a private channel that everyone cannot see ( The guild ID doubles as the role id for the default role @everyone, https://discordjs.guide/popular-topics/permissions.html#channel-overwrites)
+              id: guildId, // THIS WORKS! sets it to a private channel that everyone cannot see ( The guild ID doubles as the role id for the default role @everyone, https://discordjs.guide/popular-topics/permissions.html#channel-overwrites)
               deny: [Permissions.FLAGS.VIEW_CHANNEL],
             },
             {
@@ -104,7 +106,8 @@ module.exports = {
       // create guild object
       const guildObj = guildData(settings);
 
-      db.set(guildId, guildObj).then(console.log(guildObj)).catch(console.error('Unable to add guild to database.')); // create guild object in the database
+      db.set(guildId, guildObj).then(console.log(guildObj));
+        //.catch(console.error('Unable to add guild to database.')); // create guild object in the database
 
       // response embed (contains all the info to send to users)
       const responseEmbed = serverSettings(guild, callCenter, mods, activePlayer);

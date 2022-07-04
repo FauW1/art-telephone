@@ -7,25 +7,26 @@ const guildData = (settings) => {
     _queued: [],
     _completed: [],
 
+    /*
     // GETTERS AND SETTERS
-    get active(){
+    get active() {
       return this._active;
     },
-    set active(gameData){
+    set active(gameData) {
       this._active.push(gameData);
     },
-    get queued(){
+    get queued() {
       return this._queued;
     },
-    set queued(gameData){
+    set queued(gameData) {
       this._queued.push(gameData);
     },
-    get completed(){
+    get completed() {
       return this.completed;
     },
-    set completed(gameData){
+    set completed(gameData) {
       this._completed.push(gameData);
-    },
+    },*/
   };
 };
 

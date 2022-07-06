@@ -1,6 +1,8 @@
 const { MessageEmbed } = require('discord.js'); // to use embeds
 // https://discordjs.guide/popular-topics/embeds.html#using-the-embed-constructor
 
+// move into the same file as fawntune embed, then use destructured assignment
+
 /**
 * constructs an embed with all the server settings
 * @param guild the current guild object

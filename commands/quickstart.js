@@ -1,4 +1,3 @@
-// i think it's broken
 // Require the slash command builder
 const { SlashCommandBuilder } = require('@discordjs/builders');
 // message actions
@@ -21,9 +20,6 @@ const actionRow = new MessageActionRow()
       .setLabel('Join')
       .setStyle('PRIMARY'),
   );
-
-// timer, can call anonymously without a name, look at deploy commands syntax
-let timeLeft = 90; // 15 minutes in seconds
 
 // Export as a module for other files to require()
 module.exports = {
@@ -57,8 +53,7 @@ module.exports = {
         .setDescription('How many participants are allowed.')),
 
   async execute(interaction) { // command functions
-    const msgId = interaction.deferReply({ fetchReply: true })
-      .then(reply => { return reply.id; });  // open 15-minute window; store msg id; https://discord.js.org/#/docs/discord.js/main/typedef/InteractionDeferReplyOptions
+    msg = await interaction.deferReply({ fetchReply: true });  // open 15-minute window https://discord.js.org/#/docs/discord.js/main/typedef/InteractionDeferReplyOptions
 
     const guildId = interaction.guild.id; // store the guild id
     const guildObj = await db.get(guildId); // store guild object
@@ -66,33 +61,37 @@ module.exports = {
     if (!guildObj) {
       return interaction.editReply("You need to run '/setup' first!"); // no guild object found yet
     }
-
-    let gameSettings = guildObj.settings.gameDefault; // get the guild default settings
-    // Update game settings
-    gameSettings.duration = interaction.options.getInteger('duration');
-    gameSettings.unit(interaction.options.getString('units'));
-    const maxNum = interaction.options.getInteger('max');
-    gameSettings.max = maxNum ? maxNum : NaN;
     // TODO: reaction collector, create a new game based on this, send reminder messages (regularly scheduled, check every second)
-    // create a new game
-    gameData(interaction.getString('name'), gameSettings, msgId); // create a game object
-    timeLeft = (interaction.command.createdTimestamp - Date().now) / 1000; // seconds left
-    
-    let countDown = setInterval(
-      (interaction) => {
-        if (timeLeft > 0) {
-          timeLeft -= 1;
-          interaction.editReply({ content: `Click on the button below to join the game!\n\n${timeLeft} seconds left.`, components: [actionRow] }); // TODO: ADD RELEVANT EMBED
-        } else { // AS BUTTON CLICKED, CREATE AN EMBED OF LIST OF PLAYERS WHO REGISTERED, DO NOT CLEAR IT ON TIME OUT
-          timeLeft = 0;
-        }
-      }, // every {}second
-          1000); // countdown every second
+    interaction.editReply({ content: `Click on the button below to join the game!`, components: [actionRow] }); // TODO: ADD RELEVANT EMBED, AS BUTTON CLICKED, CREATE AN EMBED OF LIST OF PLAYERS WHO REGISTERED, DO NOT CLEAR IT ON TIME OUT
 
-    if (timeLeft <= 0) clearInterval(countDown); // stop the countdown
+    let timeLeft = 900; // seconds left, from 15 min
+    console.log(timeLeft);
 
-    return interaction.editReply({ content: "Time's up!" }); // todo: add relevant embeds
+    timerMsg = await interaction.followUp({ content: `${timeLeft} seconds left to sign up.`, fetchReply: true });
 
-    // FROM BUTTON INTERACTION, COUNT NUMBER OF PLAYERS: if max reached, Stop timer here and edit the message to full!
+    let countDown = await setInterval(() => {
+      if (timeLeft > 0) {
+        timeLeft--;
+        timerMsg.edit(`${timeLeft} seconds left to sign up.`)
+      } else {
+        timeLeft = 0;
+        timerMsg.delete(); // delete the count down message
+        clearInterval(countDown);
+
+        // create a new game
+        let gameSettings = guildObj.settings.gameDefault; // get the guild default settings
+        // Update game settings
+        gameSettings.duration = interaction.options.getInteger('duration');
+        gameSettings.unit = interaction.options.getString('units');
+        const maxNum = interaction.options.getInteger('max');
+        gameSettings.max = maxNum ? maxNum : NaN;
+        gameData(interaction.options.getString('name'), gameSettings, msg.id); // create a game object
+
+        return interaction.editReply({ content: "Time's up!", components: [actionRow.components[0].setDisabled(true)] }); // todo: add relevant embeds
+
+        // FROM BUTTON INTERACTION, COUNT NUMBER OF PLAYERS: if max reached, Stop timer here and edit the message to full!
+      }
+    }, // every second
+      1000); // countdown every second
   },
 };

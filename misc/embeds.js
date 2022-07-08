@@ -4,8 +4,8 @@ const { MessageEmbed } = require('discord.js');
 // theme colors (TODO: edit the blue)
 const mainColor = 0x8f3985;
 const mainStr = '#8f3985';
-const secondaryColor = 0x0099ff;
-const secondaryStr = '#0099ff';
+const secondaryColor = 0x07beb8;
+const secondaryStr = '#07beb8';
 
 // custom signUpEmbed constructor
 const signUpEmbed = ( // using object destructuring, accept an object with specified arguments
@@ -19,9 +19,9 @@ const signUpEmbed = ( // using object destructuring, accept an object with speci
   
   if (userArray) {
     for (user in userArray) {
-     tempEmbed.addField(user.toString(), '\n'); // create field with name
+     tempEmbed.addField(`${user}`, '\u200B', false); // create field with name
     }
-    tempEmbed.setFooter(`${userArray.length} players.`);
+    tempEmbed.setFooter({ text: `${userArray.length} players.` });
   }
 
   return tempEmbed;

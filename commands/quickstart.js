@@ -14,8 +14,8 @@ const gameData = require(path.join(schemaPath, 'guildData.js')); // for game dat
 const userData = require(path.join(schemaPath, 'userData.js'));
 
 // embed/component modules
-const embedsPath = path.join(__dirname, '..', 'embeds'); // folder with all the embeds/components
-const { signUpEmbed, timerEmbed } = require(path.join(embedsPath, 'components.js')); // for embeds
+const miscPath = path.join(__dirname, '..', 'misc'); // folder with all the embeds/components
+const { signUpEmbed, timerEmbed } = require(path.join(miscPath, 'embeds.js')); // for embeds
 
 // combine w embeds as "embeds and components", like "support" and "info" link buttons; for buttons: https://discordjs.guide/interactions/buttons.html#building-and-sending-buttons
 const actionRow = new MessageActionRow()
@@ -88,7 +88,7 @@ module.exports = {
     let playersEmbed = signUpEmbed({ gameName: gameName }); // store signUpEmbed in here
 
     // start timer
-    let countDown = await setInterval(() => {
+    let countDown = setInterval(() => {
       if (timeLeft > 0) {
         timeLeft--;
         if (timeLeft % 60 === 0 || timeLeft < 15) { // time checks
@@ -103,40 +103,44 @@ module.exports = {
     // Collectors: https://discordjs.guide/popular-topics/collectors.html#interaction-collectors
     const collector = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', time: timeLeft * 1000 }); // collector using the timeLeft
 
-    await interaction.editReply({ content: `Click on the button below to join the game! Max players allowed: ${maxNum}`, components: [actionRow], embeds: [playersEmbed, timerEmbed(timeLeft)] });
+    await interaction.editReply({ content: `**Click on the button below to join the game!** _Max players allowed: ${maxNum}_`, components: [actionRow], embeds: [playersEmbed, timerEmbed(timeLeft)] });
 
     collector.on('collect', async i => {
       let maxReached = userArray.length > maxNum ? true : false; // whether the max number of players reached
 
+      // new user
+      const newUser = userData(i.user);
+      
       if (i.customId === 'joinQ') {
 
         if (userArray.includes(newUser)) {
 
-          i.reply({ content: 'You have already signed up!', ephemeral: true });
+          await i.reply({ content: 'You have already signed up!', ephemeral: true });
 
         } else if (maxReached) {
 
-          i.reply({ content: `Maximum of ${maxNum} players reached!`, ephemeral: true });
+          await i.reply({ content: `Maximum of ${maxNum} players reached!`, ephemeral: true });
 
         } else {
-          // new user
-          const newUser = userData(i.user);
           userArray.push(newUser); // add a new user to the user array
-
+          
           // response
           playersEmbed = signUpEmbed({ userArray: userArray, gameName: gameName });
           await interaction.editReply({ embeds: [playersEmbed, timerEmbed(timeLeft)] });
+          await i.reply({ content: `You have signed up for the game ${gameName}`, ephemeral: true });
         }
 
       } else if (i.customId === 'cancelQ') {
-        const newUser = i.user;
-
+        
         if (userArray.includes(newUser)) {
           userArray = userArray.filter(user => user != newUser); // only keep elements that is not the current user
 
           // response
           playersEmbed = signUpEmbed({ userArray: userArray, gameName: gameName });
           await interaction.editReply({ embeds: [playersEmbed, timerEmbed(timeLeft)] });
+          await i.reply({ content: `You have left the game ${gameName}`, ephemeral: true })
+        } else {
+          await i.reply({ content: `You are not in the game ${gameName}`, ephemeral: true })
         }
       }
     });

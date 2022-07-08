@@ -14,8 +14,8 @@ const guildData = require(path.join(schemaPath, 'guildData.js')); // for guild d
 const settingsData = require(path.join(schemaPath, 'settingsData.js')); // for settings data factory function
 
 // embed modules
-const embedsPath = path.join(__dirname, '..', 'embeds');
-const serverSettings = require(path.join(embedsPath, 'server-settings.js')); // for server settings constructor
+const miscPath = path.join(__dirname, '..', 'misc');
+const { serverSettings } = require(path.join(miscPath, 'embeds.js')); // for server settings constructor
 
 // call center permissions
 const modPerms = Permissions.FLAGS.MODERATE_MEMBERS;

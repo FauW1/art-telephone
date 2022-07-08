@@ -1,6 +1,6 @@
-const userData = (userId) => {
+const userData = (user) => {
   return {
-    id: userId,
+    user: user,
     url: null, //submission url
   };
 };

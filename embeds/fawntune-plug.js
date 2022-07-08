@@ -12,7 +12,7 @@ const fawntuneEmbed = {
 		{ name: 'Support me on Ko-Fi', value: 'https://ko-fi.com/fawntune' },
 		{ name: 'Instagram', value: 'https://www.instagram.com/faustine.art/', inline: true },
 		{ name: 'Itch.io', value: 'https://fawntune.itch.io/', inline: true },
-    { name: 'Linktree', value: 'https://linktr.ee/faustinew'},
+    { name: 'Linktree', value: 'https://linktr.ee/faustinew', inline: true },
 	],
 };
 

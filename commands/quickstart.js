@@ -48,6 +48,12 @@ module.exports = {
 
   async execute(interaction) { // command functions
     msg = await interaction.deferReply({ fetchReply: true });  // open 15-minute window https://discord.js.org/#/docs/discord.js/main/typedef/InteractionDeferReplyOptions
+
+    // create a row
+    const timeStamp = Date.now(); // current ms from epoch time
+    const joinId = `j${timeStamp}`; // id of join button
+    const leaveId = `l${timeStamp}`; // id of leave button
+    const row = actionRow(joinId, leaveId); // create row of buttons
     
     const guildId = interaction.guild.id; // store the guild id
     const guildObj = await db.get(guildId); // store guild object
@@ -55,12 +61,6 @@ module.exports = {
     if (!guildObj) {
       return await interaction.editReply("You need to run '/setup' first!"); // no guild object found yet
     }
-
-    // create a row
-    const timeStamp = Date.now(); // current ms from epoch time
-    const joinId = `j${timeStamp}`; // id of join button
-    const leaveId = `l${timeStamp}`; // id of leave button
-    const row = actionRow(joinId, leaveId); // create row of buttons
     
     // create a new game
     let gameSettings = guildObj.settings.gameDefault; // get the guild default settings

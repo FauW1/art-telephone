@@ -1,7 +1,5 @@
 // Require the slash command builder
 const { SlashCommandBuilder } = require('@discordjs/builders');
-// message actions
-const { MessageActionRow, MessageButton } = require('discord.js');
 
 // require modules
 const path = require('node:path');
@@ -15,20 +13,7 @@ const userData = require(path.join(schemaPath, 'userData.js'));
 
 // embed/component modules
 const miscPath = path.join(__dirname, '..', 'misc'); // folder with all the embeds/components
-const { signUpEmbed, timerEmbed } = require(path.join(miscPath, 'embeds.js')); // for embeds
-
-// combine w embeds as "embeds and components", like "support" and "info" link buttons; for buttons: https://discordjs.guide/interactions/buttons.html#building-and-sending-buttons
-const actionRow = new MessageActionRow()
-  .addComponents(
-    new MessageButton()
-      .setCustomId('joinQ')
-      .setLabel('Join')
-      .setStyle('PRIMARY'),
-    new MessageButton()
-      .setCustomId('cancelQ')
-      .setLabel('Cancel')
-      .setStyle('SECONDARY'),
-  );
+const { signUpEmbed, timerEmbed, actionRow } = require(path.join(miscPath, 'embeds.js')); // for embeds
 
 // Export as a module for other files to require()
 module.exports = {
@@ -63,7 +48,7 @@ module.exports = {
 
   async execute(interaction) { // command functions
     msg = await interaction.deferReply({ fetchReply: true });  // open 15-minute window https://discord.js.org/#/docs/discord.js/main/typedef/InteractionDeferReplyOptions
-
+    
     const guildId = interaction.guild.id; // store the guild id
     const guildObj = await db.get(guildId); // store guild object
 
@@ -71,9 +56,15 @@ module.exports = {
       return await interaction.editReply("You need to run '/setup' first!"); // no guild object found yet
     }
 
+    // create a row
+    const timeStamp = Date.now(); // current ms from epoch time
+    const joinId = `j${timeStamp}`; // id of join button
+    const leaveId = `l${timeStamp}`; // id of leave button
+    const row = actionRow(joinId, leaveId); // create row of buttons
+    
     // create a new game
     let gameSettings = guildObj.settings.gameDefault; // get the guild default settings
-    
+
     // Update game settings; TODO: make this a set function in gameDefault
     gameSettings.duration = interaction.options.getInteger('duration');
     gameSettings.unit = interaction.options.getString('units');
@@ -94,6 +85,7 @@ module.exports = {
         timeLeft--;
         if (timeLeft % 60 === 0 || timeLeft < 15) { // time checks
           interaction.editReply({ embeds: [playersEmbed, timerEmbed(timeLeft)] }); // update
+          console.log('timerUpdate' + playersEmbed);
         }
       }
     }, // every second
@@ -102,24 +94,26 @@ module.exports = {
     let userArray = [];
 
     // Collectors: https://discordjs.guide/popular-topics/collectors.html#interaction-collectors
-    const collector = interaction.channel.createMessageComponentCollector({ componentType: 'BUTTON', time: timeLeft * 1000 }); // collector using the timeLeft
+    const filter = i => {
+      // i.deferUpdate();
+      return i.message.id === msg.id;
+    }; // filter only interactions on this message that is a button
+    const collector = interaction.channel.createMessageComponentCollector({ filter, componentType: 'BUTTON', time: timeLeft * 1000 }); // collector using the timeLeft
 
-    await interaction.editReply({ content: `**Click on the button below to join the game!** _Max players allowed: ${maxNum}_`, components: [actionRow], embeds: [playersEmbed, timerEmbed(timeLeft)] });
+    await interaction.editReply({ content: `**Click on the button below to join the game!** _Max players allowed: ${maxNum}_`, components: [row], embeds: [playersEmbed, timerEmbed(timeLeft)] });
 
     collector.on('collect', async i => {
       let maxReached = false; // begin as false
-      if(maxNum){
+      if (maxNum) {
         maxReached = userArray.length >= maxNum ? true : false; // whether the max number of players reached
       }
 
       // new user
-      let newUser = userData(i.user); // new user is a user data object
-      let userId = newUser.user.id;
-      let userIdArray = userArray.map(user => user.user.id); // make a user id array
-      
-      if (i.customId === 'joinQ') {
+      let newUser = i.user;
 
-        if (userIdArray.includes(userId)) {
+      if (i.customId === joinId) {
+
+        if (userArray.includes(newUser)) {
 
           await i.reply({ content: 'You have already signed up!', ephemeral: true });
 
@@ -129,16 +123,20 @@ module.exports = {
 
         } else {
           userArray.push(newUser); // add a new user to the user array
-          
           // response
           playersEmbed = signUpEmbed({ userArray: userArray, gameName: gameName });
+
+          //todo: delete
+          console.log('userarray' + userArray);
+          console.log(playersEmbed);
+
           await interaction.editReply({ embeds: [playersEmbed, timerEmbed(timeLeft)] });
           await i.reply({ content: `You have signed up for the game **${gameName}**`, ephemeral: true });
         }
 
-      } else if (i.customId === 'cancelQ') {
-        
-        if (userIdArray.includes(userId)) {
+      } else if (i.customId === leaveId) {
+
+        if (userArray.includes(newUser)) {
           userArray = userArray.filter(user => user != newUser); // only keep elements that is not the current user
 
           // response

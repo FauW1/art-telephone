@@ -73,6 +73,7 @@ module.exports = {
 
     // create a new game
     let gameSettings = guildObj.settings.gameDefault; // get the guild default settings
+    
     // Update game settings; TODO: make this a set function in gameDefault
     gameSettings.duration = interaction.options.getInteger('duration');
     gameSettings.unit = interaction.options.getString('units');
@@ -89,7 +90,7 @@ module.exports = {
 
     // start timer
     let countDown = setInterval(() => {
-      if (timeLeft > 0) {
+      if (timeLeft >= 0) {
         timeLeft--;
         if (timeLeft % 60 === 0 || timeLeft < 15) { // time checks
           interaction.editReply({ embeds: [playersEmbed, timerEmbed(timeLeft)] }); // update
@@ -106,14 +107,19 @@ module.exports = {
     await interaction.editReply({ content: `**Click on the button below to join the game!** _Max players allowed: ${maxNum}_`, components: [actionRow], embeds: [playersEmbed, timerEmbed(timeLeft)] });
 
     collector.on('collect', async i => {
-      let maxReached = userArray.length > maxNum ? true : false; // whether the max number of players reached
+      let maxReached = false; // begin as false
+      if(maxNum){
+        maxReached = userArray.length >= maxNum ? true : false; // whether the max number of players reached
+      }
 
       // new user
-      const newUser = userData(i.user);
+      let newUser = userData(i.user); // new user is a user data object
+      let userId = newUser.user.id;
+      let userIdArray = userArray.map(user => user.user.id); // make a user id array
       
       if (i.customId === 'joinQ') {
 
-        if (userArray.includes(newUser)) {
+        if (userIdArray.includes(userId)) {
 
           await i.reply({ content: 'You have already signed up!', ephemeral: true });
 
@@ -127,31 +133,31 @@ module.exports = {
           // response
           playersEmbed = signUpEmbed({ userArray: userArray, gameName: gameName });
           await interaction.editReply({ embeds: [playersEmbed, timerEmbed(timeLeft)] });
-          await i.reply({ content: `You have signed up for the game ${gameName}`, ephemeral: true });
+          await i.reply({ content: `You have signed up for the game **${gameName}**`, ephemeral: true });
         }
 
       } else if (i.customId === 'cancelQ') {
         
-        if (userArray.includes(newUser)) {
+        if (userIdArray.includes(userId)) {
           userArray = userArray.filter(user => user != newUser); // only keep elements that is not the current user
 
           // response
           playersEmbed = signUpEmbed({ userArray: userArray, gameName: gameName });
           await interaction.editReply({ embeds: [playersEmbed, timerEmbed(timeLeft)] });
-          await i.reply({ content: `You have left the game ${gameName}`, ephemeral: true })
+          await i.reply({ content: `You have left the game **${gameName}**`, ephemeral: true })
         } else {
-          await i.reply({ content: `You are not in the game ${gameName}`, ephemeral: true })
+          await i.reply({ content: `You are not in the game **${gameName}**`, ephemeral: true })
         }
       }
     });
 
     collector.on('end', () => {
-      game.users = userArray;
+      game.users = userArray.map(user => userData(user)); // make a user data array
 
       timeLeft = 0; // set back to 0
       clearInterval(countDown);
 
-      return interaction.update({ content: "Time's up!", embeds: [playersEmbed] });
+      return interaction.editReply({ content: "Time's up!", components: [], embeds: [playersEmbed] }); // update
     });
   },
 };

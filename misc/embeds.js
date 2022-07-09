@@ -19,7 +19,7 @@ const signUpEmbed = ( // using object destructuring, accept an object with speci
   
   if (userArray) {
     for (user in userArray) {
-     tempEmbed.addField(`${user}`, '\u200B', false); // create field with name
+     tempEmbed.addField(`<@&${user.user.id}>`, 'dialed in', false); // create field with name
     }
     tempEmbed.setFooter({ text: `${userArray.length} players.` });
   }

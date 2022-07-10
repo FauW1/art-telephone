@@ -1,6 +1,6 @@
 // Require the slash command builder
 const { SlashCommandBuilder } = require('@discordjs/builders');
-
+/*
 // require modules
 const path = require('node:path');
 const Database = require("@replit/database");
@@ -13,7 +13,7 @@ const userData = require(path.join(schemaPath, 'userData.js'));
 
 // embed/component modules
 const miscPath = path.join(__dirname, '..', 'misc'); // folder with all the embeds/components
-const { signUpEmbed, timerEmbed, actionRow } = require(path.join(miscPath, 'embeds.js')); // for embeds
+const { signUpEmbed, timerEmbed, actionRow } = require(path.join(miscPath, 'embeds.js')); // for embeds*/
 
 // Export as a module for other files to require()
 module.exports = {
